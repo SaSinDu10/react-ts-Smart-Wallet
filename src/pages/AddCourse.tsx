@@ -4,11 +4,8 @@ import { useMutation, gql } from '@apollo/client';
 import { Button, Modal, Input } from 'antd';
 
 const ADD_COURSE = gql`
-    mutation AddCourse($course: CourseInput!) {
-        AddCourse(course: $course) {
-            _id
-            name
-        }
+    mutation Mutation($course: CourseInput!) {
+        AddCourse(course: $course)
     }
 `;
 

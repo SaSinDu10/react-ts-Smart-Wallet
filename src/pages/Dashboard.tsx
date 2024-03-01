@@ -3,5 +3,7 @@ import React from 'react';
 
 
 export default function Dashboard() {
-    return <MainUi>{[]}</MainUi>
+    return <MainUi>
+        <h1>!..........Welcome............!</h1>
+    </MainUi>
 }

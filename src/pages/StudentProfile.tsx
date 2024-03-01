@@ -1,34 +1,39 @@
-import React from 'react';
+import React, { useState } from 'react';
 import MainUi from "../components/MainUi";
 import { useQuery, gql } from '@apollo/client';
-import { Divider, Table, Button } from 'antd';
+import { Divider, Table, Button, Dropdown, Menu } from 'antd';
 import { Link, useParams } from 'react-router-dom';
+import StudentActivate from '../buttons/StudentActivate';
+import AssignCourse from '../buttons/AssignCourse';
+import RemoveCourse from '../buttons/RemoveCourse';
+import SelectCourse from '../buttons/SelectCourse';
 
 const GET_STUDENT = gql`
     query GetStudent($getStudentId: ObjectId!) {
-    GetStudent(id: $getStudentId) {
-        _id
-        isActive
-        name
-        courses {
+        GetStudent(id: $getStudentId) {
             _id
             isActive
-            lastPaymentGeneration
             name
+            courses {
+                _id
+                isActive
+                lastPaymentGeneration
+                name
+            }
         }
     }
-}
 `;
 
 const StudentProfile = () => {
     const { studentId } = useParams();
-    console.log(studentId)
+    console.log(studentId);
+    const [selectedCourseId, setSelectedCourseId] = useState("");
     const { loading, error, data } = useQuery(GET_STUDENT, {
         variables: {
             getStudentId: studentId,
         },
     });
-    
+
 
     if (loading) return <p>Loading...</p>;
 
@@ -47,7 +52,7 @@ const StudentProfile = () => {
         {
             title: 'Active',
             dataIndex: 'isActive',
-            render: (isActive: boolean) => (isActive ? 'Yes' : 'No'),
+            render: (isActive: boolean) => (isActive ? 'Active Student' : 'Inactive Student'),
         },
     ];
 
@@ -68,33 +73,58 @@ const StudentProfile = () => {
         },
         {
             title: 'De-Assign',
-            render: (record: any) => <Button onClick={() => deAssignCourse(record)}>De-Assign</Button>,
+            render: (record: any) => (
+                <RemoveCourse studentId={student._id} courseId={record._id} onRemove={onRemove} />
+            ),
         },
     ];
 
-    const deAssignCourse = (record: any) => {
-        // To Do
-        console.log('De-assign course:', record);
+    const handleCourseSelect = (courseId: string) => {
+        setSelectedCourseId(courseId);
     };
 
-    const toggleActiveStatus = () => {
-        // To Do
-    };
+    const menu = (
+        <Menu>
+            {student.courses.map((course: { _id: string; name: string; }) => (
+                <Menu.Item key={course._id} onClick={() => handleCourseSelect(course._id)}>
+                    {course.name}
+                </Menu.Item>
+            ))}
+        </Menu>
+    );
+
 
     return (
         <MainUi>
             <div>
                 <Divider>Student Profile</Divider>
                 <h1>{student.name}</h1>
-                <Button onClick={toggleActiveStatus}>
-                    {student.isActive ? 'Deactivate' : 'Activate'}
-                </Button>
+                <StudentActivate state={student.isActive} />
                 <Table columns={columns1} dataSource={[student]} size="middle" />
                 <h2>Enrolled Courses</h2>
+                <AssignCourse
+                    studentId={student._id}
+                    courses={student.courses.map((course: { _id: string; name: string; }) => ({ _id: course._id, name: course.name }))} />
                 <Table columns={columns2} dataSource={student.courses} size="middle" />
+                <h2>Payments</h2>
+                <Dropdown overlay={menu} placement="bottomCenter" trigger={['click']}>
+                    <Button>Select a Course</Button>
+                </Dropdown>
+
+                {selectedCourseId && (
+                    <SelectCourse
+                        studentId={student._id}
+                        courseId={selectedCourseId}
+                    />
+                )}
             </div>
         </MainUi>
     );
 };
 
 export default StudentProfile;
+
+
+function onRemove(): void {
+    throw new Error('Function not implemented.');
+}

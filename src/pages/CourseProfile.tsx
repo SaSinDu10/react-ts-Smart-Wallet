@@ -1,9 +1,10 @@
 import React from 'react';
 import MainUi from "../components/MainUi";
 import { useQuery, gql } from '@apollo/client';
-import { Divider, Table, Button } from 'antd';
+import { Divider, Table } from 'antd';
 import { Link, useParams } from 'react-router-dom';
-
+import CourseActivate from '../buttons/CourseActivate';
+import GeneratePayment from '../buttons/GeneratePayment';
 
 const GET_COURSE = gql`
     query Query($getCourseId: ObjectId!) {
@@ -47,7 +48,7 @@ const CourseProfile = () => {
         {
             title: 'State',
             dataIndex: 'isActive',
-            render: (isActive: boolean) => (isActive ? 'Yes' : 'No'),
+            render: (isActive: boolean) => (isActive ? 'Active Course' : 'Discontinued Course'),
         },
         {
             title: 'Last Payment Generate',
@@ -73,21 +74,15 @@ const CourseProfile = () => {
         
     ];
 
-    const toggleActiveStatus = () => {
-        // To Do
-    };
-
     return (
         <MainUi>
             <div>
                 <Divider>Course Profile</Divider>
                 <h1>{course.name}</h1>
-                <Button onClick={toggleActiveStatus}>
-                    {course.isActive ? 'Deactivate' : 'Activate'}
-                </Button>
+                <CourseActivate state={course.isActive} />
                 <Table columns={columns1} dataSource={[course]} size="middle" />
                 <h2>Enrolled Students</h2>
-                <button>Generate Payments</button>
+                <GeneratePayment courseId={courseId} />
                 <Table columns={columns2} dataSource={course.students} size="middle" />
             </div>
         </MainUi>

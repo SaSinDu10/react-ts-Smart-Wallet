@@ -3,14 +3,9 @@ import MainUi from '../components/MainUi';
 import { useMutation, gql } from '@apollo/client';
 import { Button, Modal, Input } from 'antd';
 
-
 const ADD_STUDENT = gql`
-    mutation AddStudent($student: StudentInput!) {
-        AddStudent(student: $student) {
-        _id
-        name
-        isActive
-        }
+    mutation Mutation($student: StudentInput!) {
+        AddStudent(student: $student)
     }
 `;
 

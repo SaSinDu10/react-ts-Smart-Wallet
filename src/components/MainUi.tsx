@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Layout, Menu, MenuProps } from "antd";
 import {
     HomeOutlined,
-    UserAddOutlined,
+    //UserAddOutlined,
     TeamOutlined,
     UserOutlined,
     BookOutlined,
@@ -26,7 +26,7 @@ const items = [
     getItem("Home", "1", <HomeOutlined />),
     getItem("Students", "sub1", <UserOutlined />, [
         getItem("View Students", "2", <TeamOutlined />),
-        getItem("Add Student", "3", <UserAddOutlined />),
+        //getItem("Add Student", "3", <UserAddOutlined />),
     ]),
     getItem("Courses", "sub2", <BookOutlined />, [
         getItem("View Courses", "4", <SnippetsOutlined />),

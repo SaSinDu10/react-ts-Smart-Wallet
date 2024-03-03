@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-//import MainUi from '../components/MainUi';
+import { Modal, Input } from 'antd';
 import { useMutation, gql } from '@apollo/client';
-import { Button, Modal, Input } from 'antd';
 
 const ADD_STUDENT = gql`
     mutation Mutation($student: StudentInput!) {
@@ -9,47 +8,31 @@ const ADD_STUDENT = gql`
     }
 `;
 
-const AddStudent = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+const AddStudent = ({ visible, onClose }: { visible: boolean; onClose: () => void }) => {
     const [studentName, setStudentName] = useState('');
-    
-
-    const [addStudent] = useMutation(ADD_STUDENT, {
-        onCompleted: () => {
-            setIsModalOpen(false);
-            setStudentName('');
-        },
-    });
-
-    const showModal = () => {
-        setIsModalOpen(true);
-    };
+    const [addStudent] = useMutation(ADD_STUDENT);
 
     const handleOk = () => {
         addStudent({ variables: { student: { name: studentName } } });
+        onClose(); 
     };
 
     const handleCancel = () => {
-        setIsModalOpen(false);
-        setStudentName('');
+        onClose(); 
     };
 
     return (
-        
-            <>
-                <Button type="primary" onClick={showModal}>
-                    Register New Student
-                </Button>
-                <Modal title="Register Student" visible={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                    <h1>Register Student</h1>
-                    <Input
-                        placeholder='Student Name'
-                        value={studentName}
-                        onChange={(e) => setStudentName(e.target.value)}
-                    />
-                </Modal>
-            </>
-        
+        <Modal 
+            title="Register Student" 
+            visible={visible} 
+            onOk={handleOk} 
+            onCancel={handleCancel}>
+                <Input
+                    placeholder="Student Name"
+                    value={studentName}
+                    onChange={(e) => setStudentName(e.target.value)}
+                />
+        </Modal>
     );
 };
 

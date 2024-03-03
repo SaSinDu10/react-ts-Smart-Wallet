@@ -9,7 +9,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import NoPage from "./pages/NoPage";
 import Students from "./pages/Students";
-import AddStudent from "./pages/AddStudent";
+//import AddStudent from "./pages/AddStudent";
 import AddCourse from "./pages/AddCourse";
 import Courses from "./pages/Courses";
 import StudentProfile from "./pages/StudentProfile";
@@ -47,10 +47,10 @@ const routes = [
     path: "/Students",
     element: <Students/>,
   },
-  {
-    path: "/AddStudent",
-    element: <AddStudent />,
-  },
+  // {
+  //   path: "/AddStudent",
+  //   element: <AddStudent />,
+  // },
   {
     path: "/Courses",
     element: <Courses />,

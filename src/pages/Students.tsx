@@ -1,4 +1,4 @@
-import { Divider, Button, Input, Space, Table, Flex } from 'antd';
+import { Divider, Button, Input, Space, Table, Flex, Breadcrumb } from 'antd';
 import { useQuery, gql } from '@apollo/client';
 import MainUi from '../components/MainUi';
 import { Link } from 'react-router-dom';
@@ -7,6 +7,7 @@ import { SearchOutlined } from '@ant-design/icons';
 import type { GetRef, TableColumnsType, TableColumnType } from 'antd';
 import type { FilterDropdownProps } from 'antd/es/table/interface';
 import Highlighter from 'react-highlight-words';
+import AddStudent from './AddStudent';
 
 type InputRef = GetRef<typeof Input>;
 
@@ -34,6 +35,15 @@ const Students = () => {
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef<InputRef>(null);
+    const [openAddStudent, setOpenAddStudent] = useState(false);
+
+    const handleAddStudentButtonClick = () => {
+        setOpenAddStudent(true);
+    };
+
+    const handleAddStudentModalClose = () => {
+        setOpenAddStudent(false);
+    };
 
 
     if (loading) return <p>Loading...</p>;
@@ -156,16 +166,20 @@ const Students = () => {
             dataIndex: 'isActive',
             key: 'isActive',
             render: (isActive: boolean) => (isActive ? 'Yes' : 'No'),
-            // ...getColumnSearchProps('address'),
-            // sorter: (a, b) => a.address.length - b.address.length,
-            // sortDirections: ['descend', 'ascend'],
         },
     ];
 
     return (
         <MainUi>
+            <Breadcrumb style={{ margin: "16px 0" }} items={[{ title: "Home" }, { title: "Student" }]} />
             <Flex gap={16}>
-                <Button size="large" type="primary"  onClick={() => {}}>Add</Button>
+                <Button size="large" type="primary" 
+                style={{ margin:'5 px'}} 
+                onClick={handleAddStudentButtonClick}>
+                    Register New Student
+                </Button>
+                <AddStudent visible={openAddStudent} onClose={handleAddStudentModalClose} />
+                <Input.Search size="large" placeholder="Filter by keyword" />
             </Flex>
             <div>
                 <Divider>Student Table</Divider>

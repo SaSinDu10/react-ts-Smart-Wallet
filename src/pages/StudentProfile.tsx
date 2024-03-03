@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import MainUi from "../components/MainUi";
 import { useQuery, gql } from '@apollo/client';
-import { Divider, Table, Button, Dropdown, Menu } from 'antd';
+import { Divider, Table,  Dropdown, Menu } from 'antd';
 import { Link, useParams } from 'react-router-dom';
 import StudentActivate from '../buttons/StudentActivate';
 import AssignCourse from '../buttons/AssignCourse';
@@ -100,16 +100,17 @@ const StudentProfile = () => {
                 <Divider>Student Profile</Divider>
                 <h1>{student.name}</h1>
                 <StudentActivate state={student.isActive} />
-                <Table columns={columns1} dataSource={[student]} size="middle" />
+                <Table columns={columns1} dataSource={[student]} size="middle" pagination={false}/>
+                
                 <h2>Enrolled Courses</h2>
                 <AssignCourse
                     studentId={student._id}
                     courses={student.courses.map((course: { _id: string; name: string; }) => ({ _id: course._id, name: course.name }))} />
                 <Table columns={columns2} dataSource={student.courses} size="middle" />
                 <h2>Payments</h2>
-                <Dropdown overlay={menu} placement="bottomCenter" trigger={['click']}>
-                    <Button>Select a Course</Button>
-                </Dropdown>
+                <Dropdown.Button overlay={menu} placement="bottomCenter" trigger={['click']}>
+                    Select a Course
+                </Dropdown.Button>
 
                 {selectedCourseId && (
                     <SelectCourse

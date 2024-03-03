@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import MainUi from '../components/MainUi';
+//import MainUi from '../components/MainUi';
 import { useMutation, gql } from '@apollo/client';
 import { Button, Modal, Input } from 'antd';
 
@@ -35,7 +35,7 @@ const AddStudent = () => {
     };
 
     return (
-        <MainUi>
+        
             <>
                 <Button type="primary" onClick={showModal}>
                     Register New Student
@@ -49,7 +49,7 @@ const AddStudent = () => {
                     />
                 </Modal>
             </>
-        </MainUi>
+        
     );
 };
 

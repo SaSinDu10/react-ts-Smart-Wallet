@@ -1,5 +1,6 @@
 import React from 'react';
 import { useMutation, gql } from '@apollo/client';
+import { Button } from 'antd';
 
 const GENERATE_PAYMENT = gql`
     mutation Mutation($courseId: ObjectId!) {
@@ -30,7 +31,7 @@ function GeneratePayment({ courseId }: Props) {
     };
 
     return (
-        <button onClick={handleGeneratePayment}>Generate Payments</button>
+        <Button onClick={handleGeneratePayment}>Generate Payments</Button>
     );
 }
 

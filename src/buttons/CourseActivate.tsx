@@ -1,6 +1,7 @@
 import React from 'react'
 import { useMutation, gql } from '@apollo/client';
 import { useParams } from 'react-router-dom';
+import { Button } from 'antd';
 
 interface Props {
     state: boolean;
@@ -35,9 +36,9 @@ function CourseActivate({ state }: Props) {
     };
     return (
         <div>
-            <button onClick={toggleActiveStatus}>
+            <Button onClick={toggleActiveStatus}>
                 {state ? 'Deactivate' : 'Activate'}
-            </button>
+            </Button>
         </div>
     )
 }

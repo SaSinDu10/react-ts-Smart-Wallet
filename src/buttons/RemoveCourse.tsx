@@ -1,5 +1,6 @@
 import React from 'react'
 import { useMutation, gql } from '@apollo/client';
+import { Button } from 'antd';
 
 const REMOVE_COURSE = gql`
     mutation Mutation($studentId: ObjectId!, $courseId: ObjectId!) {
@@ -33,9 +34,9 @@ function RemoveCourse({ studentId, courseId, onRemove }: Props) {
     
 
     return (
-        <button onClick={handleRemoveCourse}>
+        <Button onClick={handleRemoveCourse}>
             Remove
-        </button>
+        </Button>
     );
 }
 

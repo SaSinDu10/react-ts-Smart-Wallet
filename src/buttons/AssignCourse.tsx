@@ -63,7 +63,7 @@ function AssignCourse({ studentId, courses }: Props) {
 
     return (
         <>
-            <Button type="primary" onClick={() => setIsModalOpen(true)}>
+            <Button type="primary" onClick={() => setIsModalOpen(true)} style={{margin:'10px 0'}}>
                 Assign a Course
             </Button>
             <Modal title="Assign Course" visible={isModalOpen} onCancel={handleCancel} footer={null}>

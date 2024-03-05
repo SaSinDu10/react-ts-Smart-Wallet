@@ -34,7 +34,7 @@ function RemoveCourse({ studentId, courseId, onRemove }: Props) {
     
 
     return (
-        <Button onClick={handleRemoveCourse}>
+        <Button onClick={handleRemoveCourse} style={{color:'#cc0000'}}>
             Remove
         </Button>
     );

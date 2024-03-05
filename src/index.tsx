@@ -12,9 +12,28 @@ import Students from "./pages/Students";
 //import AddStudent from "./pages/AddStudent";
 import AddCourse from "./pages/AddCourse";
 import Courses from "./pages/Courses";
-import StudentProfile from "./pages/StudentProfile";
+//import StudentProfile from "./pages/StudentProfile";
 import CourseProfile from "./pages/CourseProfile";
 import { setContext } from "@apollo/client/link/context";
+
+function merge(existing: any[] = [], incoming: any[]) {
+  if (existing.length > 0) {
+    const merged = [...existing];
+
+    // Add incoming items that don't exist in the existing array
+    incoming.forEach(incomingItem => {
+      const foundIncomingItemWithinExisting = existing.some(existingItem => existingItem.__ref === incomingItem.__ref);
+      if (!foundIncomingItemWithinExisting) {
+        merged.push(incomingItem);
+      }
+    });
+
+    return merged;
+  } else {
+    return incoming;
+  }
+}
+
 
 const client = new ApolloClient({
   link: setContext(async (_, { headers }) => {
@@ -27,7 +46,23 @@ const client = new ApolloClient({
   }).concat(createHttpLink({
     uri: "http://155.248.246.152:8081/graphql",
   })),
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          GetStudents: {
+            keyArgs: [], // Don't merge when these fields are changed
+            merge,
+          },
+          GetCorses: {
+            keyArgs: [], // Don't merge when these fields are changed
+            merge,
+          }
+        }
+      }
+    }
+    
+  })
 });
 
 const routes = [
@@ -59,10 +94,10 @@ const routes = [
     path: "/AddCourse",
     element: <AddCourse />,
   },
-  {
-    path: "/Students/:studentId",
-    element: <StudentProfile />,
-  },
+  // {
+  //   path: "/Students/:studentId",
+  //   element: <StudentProfile />,
+  // },
   {
     path: "/Courses/:courseId",
     element: <CourseProfile/>,

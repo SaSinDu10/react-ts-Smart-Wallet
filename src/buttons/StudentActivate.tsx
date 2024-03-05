@@ -37,7 +37,7 @@ function StudentActivate({ state }: Props) {
 
     return (
         <div>
-            <Button onClick={toggleActiveStatus}>
+            <Button onClick={toggleActiveStatus} style={{margin:'10px 0', color:'#0000cc'}}>
                 {state ? 'Deactivate' : 'Activate'}
             </Button>
         </div>

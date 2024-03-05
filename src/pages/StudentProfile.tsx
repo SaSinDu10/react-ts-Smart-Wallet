@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import MainUi from "../components/MainUi";
 import { useQuery, gql } from '@apollo/client';
-import { Divider, Table,  Dropdown, Menu } from 'antd';
-import { Link, useParams } from 'react-router-dom';
+import { Divider, Table, Tabs, Tag } from 'antd';
+import { Link } from 'react-router-dom';
 import StudentActivate from '../buttons/StudentActivate';
 import AssignCourse from '../buttons/AssignCourse';
 import RemoveCourse from '../buttons/RemoveCourse';
 import SelectCourse from '../buttons/SelectCourse';
+
 
 const GET_STUDENT = gql`
     query GetStudent($getStudentId: ObjectId!) {
@@ -24,16 +24,20 @@ const GET_STUDENT = gql`
     }
 `;
 
-const StudentProfile = () => {
-    const { studentId } = useParams();
-    console.log(studentId);
-    const [selectedCourseId, setSelectedCourseId] = useState("");
+interface StudentProfileProps {
+    studentId: string;
+}
+
+const { TabPane } = Tabs;
+
+const StudentProfile: React.FC<StudentProfileProps> = ({ studentId }) => {
     const { loading, error, data } = useQuery(GET_STUDENT, {
         variables: {
             getStudentId: studentId,
         },
     });
 
+    const [selectedCourseId, setSelectedCourseId] = useState("");
 
     if (loading) return <p>Loading...</p>;
 
@@ -83,43 +87,50 @@ const StudentProfile = () => {
         setSelectedCourseId(courseId);
     };
 
-    const menu = (
-        <Menu>
-            {student.courses.map((course: { _id: string; name: string; }) => (
-                <Menu.Item key={course._id} onClick={() => handleCourseSelect(course._id)}>
-                    {course.name}
-                </Menu.Item>
-            ))}
-        </Menu>
-    );
+    // const menu = (
+    //     <Menu>
+    //         {student.courses.map((course: { _id: string; name: string; }) => (
+    //             <Menu.Item key={course._id} onClick={() => handleCourseSelect(course._id)}>
+    //                 {course.name}
+    //             </Menu.Item>
+    //         ))}
+    //     </Menu>
+    // );
 
 
     return (
-        <MainUi>
-            <div>
-                <Divider>Student Profile</Divider>
-                <h1>{student.name}</h1>
-                <StudentActivate state={student.isActive} />
-                <Table columns={columns1} dataSource={[student]} size="middle" pagination={false}/>
-                
-                <h2>Enrolled Courses</h2>
-                <AssignCourse
-                    studentId={student._id}
-                    courses={student.courses.map((course: { _id: string; name: string; }) => ({ _id: course._id, name: course.name }))} />
-                <Table columns={columns2} dataSource={student.courses} size="middle" />
-                <h2>Payments</h2>
-                <Dropdown.Button overlay={menu} placement="bottomCenter" trigger={['click']}>
-                    Select a Course
-                </Dropdown.Button>
 
-                {selectedCourseId && (
-                    <SelectCourse
+        <div>
+
+            <Divider>Student Profile</Divider>
+            <Tabs defaultActiveKey="1" centered>
+                <TabPane tab="Student Details" key="1" style={{ margin: '24px' }}>
+                    <h1>{student.name}</h1>
+                    <StudentActivate state={student.isActive} />
+                    <Table columns={columns1} dataSource={[student]} size="middle" pagination={false} />
+                </TabPane>
+                <TabPane tab="Assign Courses" key="2" style={{ margin: '24px' }}>
+                    <h2>Enrolled Courses</h2>
+                    <AssignCourse
                         studentId={student._id}
-                        courseId={selectedCourseId}
-                    />
-                )}
-            </div>
-        </MainUi>
+                        courses={student.courses.map((course: { _id: string; name: string; }) => ({ _id: course._id, name: course.name }))} />
+                    <Table columns={columns2} dataSource={student.courses} size="middle" pagination={false} />
+                </TabPane>
+                <TabPane tab="Payments" key="3" style={{ margin: '24px' }}>
+                    <h2>Payments</h2>
+                    {student.courses.map((course: { _id: string; name: string; }) => (
+                        <Tag key={course._id} onClick={() => handleCourseSelect(course._id)} style={{ color: '#29a329' }}>{course.name}</Tag>
+                    ))}
+                    {selectedCourseId && (
+                        <SelectCourse
+                            studentId={student._id}
+                            courseId={selectedCourseId}
+                        />
+                    )}
+                </TabPane>
+            </Tabs>
+        </div>
+
     );
 };
 

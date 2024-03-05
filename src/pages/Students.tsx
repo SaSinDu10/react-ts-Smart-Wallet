@@ -1,13 +1,15 @@
 import { Divider, Button, Input, Space, Table, Flex, Breadcrumb } from 'antd';
 import { useQuery, gql } from '@apollo/client';
 import MainUi from '../components/MainUi';
-import { Link } from 'react-router-dom';
+//import { Link } from 'react-router-dom';
 import React, { useRef, useState } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
 import type { GetRef, TableColumnsType, TableColumnType } from 'antd';
 import type { FilterDropdownProps } from 'antd/es/table/interface';
 import Highlighter from 'react-highlight-words';
 import AddStudent from './AddStudent';
+import StudentDrawer from '../students/StudentDrawer'
+
 
 type InputRef = GetRef<typeof Input>;
 
@@ -21,21 +23,32 @@ interface DataType {
 type DataIndex = keyof DataType;
 
 const GET_STUDENTS = gql`
-    query GetStudents {
-        GetStudents {
-        _id
-        isActive
-        name
+    query Query($skip: Int) {
+        GetStudents(skip: $skip) {
+            name
+            _id
+            isActive
         }
-    }
+}
 `;
 
 const Students = () => {
-    const { loading, error, data, fetchMore: fm1 } = useQuery(GET_STUDENTS);
+    const { loading, error, data: dt1, fetchMore: fm1 } = useQuery(GET_STUDENTS);
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef<InputRef>(null);
     const [openAddStudent, setOpenAddStudent] = useState(false);
+    const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null); // Change type to string | null
+
+    const [drawerVisible, setDrawerVisible] = useState(false);
+
+    // const showDrawer = () => {
+    //     setDrawerVisible(true);
+    // };
+
+    const onCloseDrawer = () => {
+        setDrawerVisible(false);
+    };
 
     const handleAddStudentButtonClick = () => {
         setOpenAddStudent(true);
@@ -152,7 +165,8 @@ const Students = () => {
             key: '_id',
             width: '40%',
             ...getColumnSearchProps('_id'),
-            render: (_id: string) => <Link to={`/Students/${_id}`}>{_id}</Link>,
+            //render: (_id: string) => <Link to={`/Students/${_id}`}>{_id}</Link>,
+            //render: (_id: string) => <Link to={`/StudentDrawer/${_id}`}>{_id}</Link>,
         },
         {
             title: 'Student Name',
@@ -171,42 +185,47 @@ const Students = () => {
 
     return (
         <MainUi>
-            <Breadcrumb style={{ margin: "16px 0" }} items={[{ title: "Home" }, { title: "Student" }]} />
+            <Breadcrumb style={{ margin: "16px 16px" }} items={[{ title: "Home" }, { title: "Student" }]} />
             <Flex gap={16}>
-                <Button size="large" type="primary" 
-                style={{ margin:'5 px'}} 
-                onClick={handleAddStudentButtonClick}>
+                <Button size="large" type="primary"
+                    style={{ margin: '0 16px ' }}
+                    onClick={handleAddStudentButtonClick}>
                     Register New Student
                 </Button>
                 <AddStudent visible={openAddStudent} onClose={handleAddStudentModalClose} />
-                <Input.Search size="large" placeholder="Filter by keyword" />
+                <Input.Search size="large" placeholder="Filter by keyword" style={{ margin: '0 16px' }} />
             </Flex>
             <div>
-                <Divider>Student Table</Divider>
-                <Table columns={columns} dataSource={data.GetStudents} style={{ margin: '20px' }}
+                <Divider >Student Table</Divider>
+                <Table
+                    columns={columns}
+                    dataSource={dt1?.GetStudents}
+                    style={{ margin: '0 16px' }}
                     pagination={{
                         pageSize: 9,
                         onChange: (page) => {
-                            console.log(page);
-
                             fm1({
-                                // variables: { skip: (page - 1) * 10 }
-                                variables: { skip: 10 }
-                            })
-                            console.log(data.GetStudents);
+                                variables: { skip: (page - 1) * 10 }
+                            });
+                            console.log(dt1.GetStudents);
                         }
                     }}
-                // onRow={(record) => {
-                //     return {
-                //         onClick: () => {
-                //             setSelectedProduct(record);
-                //         }
-                //     };
-                // }} 
-
-                />;
-
+                    onRow={(record) => {
+                        return {
+                            onClick: () => {
+                                console.log("Clicked row:", record);
+                                if (record) {
+                                    setSelectedStudentId(record._id);
+                                    setDrawerVisible(true);
+                                } else {
+                                    console.error("Record is null or undefined.");
+                                }
+                            }
+                        };
+                    }}
+                />
             </div>
+            <StudentDrawer open={drawerVisible} onClose={onCloseDrawer} selectedStudentId={selectedStudentId} />
         </MainUi>
     );
 };

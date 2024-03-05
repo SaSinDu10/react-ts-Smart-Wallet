@@ -106,7 +106,7 @@ function SelectCourse({ studentId, courseId }: Props) {
 
     return (
         <>
-            <Table columns={columns3} dataSource={payments} size="middle" />
+            <Table columns={columns3} dataSource={payments} size="middle" pagination={false}/>
         </>
     );
 }

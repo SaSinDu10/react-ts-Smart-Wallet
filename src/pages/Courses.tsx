@@ -1,8 +1,9 @@
-import React from 'react';
-import { Divider, Table } from 'antd';
+import React, { useState } from 'react';
+import { Breadcrumb, Button, Divider, Flex, Input, Table } from 'antd';
 import { useQuery, gql } from '@apollo/client';
 import MainUi from '../components/MainUi';
 import { Link } from 'react-router-dom';
+import AddCourse from './AddCourse';
 
 const GET_COURSES = gql`
 query Query {
@@ -16,7 +17,16 @@ query Query {
 `;
 
 const Students = () => {
-    const { loading, error, data } = useQuery(GET_COURSES);
+    const { loading, error, data,fetchMore } = useQuery(GET_COURSES);
+    const [openAddCourse, setOpenAddCourse] = useState(false);
+
+    const handleAddCourseButtonClick = () => {
+        setOpenAddCourse(true);
+    };
+
+    const handleAddCourseModalClose = () => {
+        setOpenAddCourse(false);
+    };
 
     if (loading) return <p>Loading...</p>;
 
@@ -55,9 +65,33 @@ const Students = () => {
 
     return (
         <MainUi>
+            <Breadcrumb style={{ margin: "16px 16px" }} items={[{ title: "Home" }, { title: "Course" }]} />
+            <Flex gap={16}>
+                <Button size="large" type="primary"
+                    style={{ margin: '0 16px ' }}
+                    onClick={handleAddCourseButtonClick}>
+                    Register New Course
+                </Button>
+                <AddCourse visible={openAddCourse} onClose={handleAddCourseModalClose} />
+                <Input.Search size="large" placeholder="Filter by keyword" style={{ margin: '0 16px' }} />
+            </Flex>
             <div>
                 <Divider>Course Table</Divider>
-                <Table columns={columns} dataSource={data.GetCourses} size="middle" />
+                <Table 
+                columns={columns} 
+                dataSource={data.GetCourses} 
+                size="middle" 
+                style={{ margin: '0 16px' }}
+                pagination={{
+                    pageSize: 9,
+                    onChange: (page) => {
+                        fetchMore({
+                            variables: { skip: (page - 1) * 10 }
+                        });
+                        console.log(data.GetStudents);
+                    }
+                }}
+                />
             </div>
         </MainUi>
     );

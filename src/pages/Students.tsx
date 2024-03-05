@@ -1,7 +1,6 @@
 import { Divider, Button, Input, Space, Table, Flex, Breadcrumb } from 'antd';
 import { useQuery, gql } from '@apollo/client';
 import MainUi from '../components/MainUi';
-//import { Link } from 'react-router-dom';
 import React, { useRef, useState } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
 import type { GetRef, TableColumnsType, TableColumnType } from 'antd';

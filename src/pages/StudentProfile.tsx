@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { useQuery, gql } from '@apollo/client';
+import { useQuery, gql, useMutation } from '@apollo/client';
 import { Divider, Table, Tabs, Tag } from 'antd';
 import { Link } from 'react-router-dom';
 import StudentActivate from '../buttons/StudentActivate';
 import AssignCourse from '../buttons/AssignCourse';
 import RemoveCourse from '../buttons/RemoveCourse';
 import SelectCourse from '../buttons/SelectCourse';
-
 
 const GET_STUDENT = gql`
     query GetStudent($getStudentId: ObjectId!) {
@@ -24,30 +23,54 @@ const GET_STUDENT = gql`
     }
 `;
 
-interface StudentProfileProps {
+const UPDATE_STUDENT = gql`
+    mutation Mutation($studentId: ObjectId!, $student: StudentUpdate!) {
+        UpdateStudent(studentId: $studentId, student: $student)
+    }
+`;
+
+interface props {
     studentId: string;
 }
 
 const { TabPane } = Tabs;
 
-const StudentProfile: React.FC<StudentProfileProps> = ({ studentId }) => {
-    const { loading, error, data } = useQuery(GET_STUDENT, {
+export default function StudentProfile(props: props) {
+    
+    const [selectedCourseId, setSelectedCourseId] = useState("");
+    const [updateStudent] = useMutation(UPDATE_STUDENT);
+    const { loading, error, data, refetch } = useQuery(GET_STUDENT, {
         variables: {
-            getStudentId: studentId,
+            getStudentId: props.studentId,
         },
     });
-
-    const [selectedCourseId, setSelectedCourseId] = useState("");
-
+    
+    const handleMutation = (activeStatus:boolean):void =>{
+        try {
+            updateStudent({
+                variables: {
+                    studentId: props.studentId,
+                    student: { "isActive": !activeStatus }
+                },
+            });
+            
+        } catch (error) {
+            console.error('Error updating student:', error);
+        }
+        
+        refetch() 
+    }
+    
     if (loading) return <p>Loading...</p>;
-
+    
     if (error) {
         console.error('GraphQL Error:', error);
         return <p>Error loading data</p>;
     }
-
     const student = data?.GetStudent;
-
+    
+    
+    
     const columns1 = [
         {
             title: 'Id',
@@ -56,7 +79,7 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ studentId }) => {
         {
             title: 'Active',
             dataIndex: 'isActive',
-            render: (isActive: boolean) => (isActive ? 'Active Student' : 'Inactive Student'),
+            render: ()=> student.isActive ? 'Active Student' : 'Inactive Student',
         },
     ];
 
@@ -96,7 +119,8 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ studentId }) => {
     //         ))}
     //     </Menu>
     // );
-
+    
+    
 
     return (
 
@@ -106,7 +130,7 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ studentId }) => {
             <Tabs defaultActiveKey="1" centered>
                 <TabPane tab="Student Details" key="1" style={{ margin: '24px' }}>
                     <h1>{student.name}</h1>
-                    <StudentActivate state={student.isActive} />
+                    <StudentActivate state={student.isActive} onMutation = {handleMutation}/>
                     <Table columns={columns1} dataSource={[student]} size="middle" pagination={false} />
                 </TabPane>
                 <TabPane tab="Assign Courses" key="2" style={{ margin: '24px' }}>
@@ -119,7 +143,7 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ studentId }) => {
                 <TabPane tab="Payments" key="3" style={{ margin: '24px' }}>
                     <h2>Payments</h2>
                     {student.courses.map((course: { _id: string; name: string; }) => (
-                        <Tag key={course._id} onClick={() => handleCourseSelect(course._id)} style={{ color: '#29a329' }}>{course.name}</Tag>
+                        <Tag key={course._id} onClick={() => handleCourseSelect(course._id)} style={{ color: selectedCourseId === course._id ? '#29a329' : 'default-color' }}>{course.name}</Tag>
                     ))}
                     {selectedCourseId && (
                         <SelectCourse
@@ -134,7 +158,6 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ studentId }) => {
     );
 };
 
-export default StudentProfile;
 
 
 function onRemove(): void {

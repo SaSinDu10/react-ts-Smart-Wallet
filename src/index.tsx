@@ -10,7 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import NoPage from "./pages/NoPage";
 import Students from "./pages/Students";
 //import AddStudent from "./pages/AddStudent";
-import AddCourse from "./pages/AddCourse";
+//import AddCourse from "./pages/AddCourse";
 import Courses from "./pages/Courses";
 //import StudentProfile from "./pages/StudentProfile";
 import CourseProfile from "./pages/CourseProfile";
@@ -90,10 +90,10 @@ const routes = [
     path: "/Courses",
     element: <Courses />,
   },
-  {
-    path: "/AddCourse",
-    element: <AddCourse />,
-  },
+  // {
+  //   path: "/AddCourse",
+  //   element: <AddCourse />,
+  // },
   // {
   //   path: "/Students/:studentId",
   //   element: <StudentProfile />,

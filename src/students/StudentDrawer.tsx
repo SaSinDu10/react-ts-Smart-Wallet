@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Drawer, Space } from 'antd';
+import {  Drawer } from 'antd';
 import StudentProfile from '../pages/StudentProfile';
 
 interface StudentDrawerProps {
@@ -21,13 +21,7 @@ const StudentDrawer: React.FC<StudentDrawerProps> = ({ open, onClose, selectedSt
                         paddingBottom: 80,
                     },
                 }}
-                extra={
-                    <Space>
-                        <Button onClick={onClose} type="primary">
-                            Close
-                        </Button>
-                    </Space>
-                }
+                
             >
                 {selectedStudentId && <StudentProfile studentId={selectedStudentId} />}
             </Drawer>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Breadcrumb, Button, Divider, Flex, Input, Table } from 'antd';
+import { Breadcrumb, Button, Divider, Flex, Input, Table, Tag } from 'antd';
+import {  PlusOutlined } from '@ant-design/icons';
 import { useQuery, gql } from '@apollo/client';
 import MainUi from '../components/MainUi';
 import { Link } from 'react-router-dom';
@@ -50,7 +51,11 @@ const Students = () => {
         {
             title: 'Active',
             dataIndex: 'isActive',
-            render: (isActive:boolean) => (isActive ? 'Yes' : 'No'),
+            render: (isActive: boolean) => (
+                <Tag color={isActive ? 'green' : 'red'}>
+                    {isActive ? 'Active' : 'Inactive'}
+                </Tag>
+            ),
         },
         {
             title: 'Payment Generation',
@@ -69,7 +74,8 @@ const Students = () => {
             <Flex gap={16}>
                 <Button size="large" type="primary"
                     style={{ margin: '0 16px ' }}
-                    onClick={handleAddCourseButtonClick}>
+                    onClick={handleAddCourseButtonClick}
+                    icon={<PlusOutlined/>}>
                     Register New Course
                 </Button>
                 <AddCourse visible={openAddCourse} onClose={handleAddCourseModalClose} />

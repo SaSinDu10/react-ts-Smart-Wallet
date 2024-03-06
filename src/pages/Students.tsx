@@ -2,13 +2,12 @@ import { Divider, Button, Input, Space, Table, Flex, Breadcrumb } from 'antd';
 import { useQuery, gql } from '@apollo/client';
 import MainUi from '../components/MainUi';
 import React, { useRef, useState } from 'react';
-import { SearchOutlined } from '@ant-design/icons';
-import type { GetRef, TableColumnsType, TableColumnType } from 'antd';
+import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
+import { GetRef, TableColumnsType, TableColumnType,Tag } from 'antd';
 import type { FilterDropdownProps } from 'antd/es/table/interface';
 import Highlighter from 'react-highlight-words';
 import AddStudent from './AddStudent';
 import StudentDrawer from '../students/StudentDrawer'
-
 
 type InputRef = GetRef<typeof Input>;
 
@@ -28,7 +27,7 @@ const GET_STUDENTS = gql`
             _id
             isActive
         }
-}
+    }
 `;
 
 const Students = () => {
@@ -56,7 +55,6 @@ const Students = () => {
     const handleAddStudentModalClose = () => {
         setOpenAddStudent(false);
     };
-
 
     if (loading) return <p>Loading...</p>;
 
@@ -178,7 +176,11 @@ const Students = () => {
             title: 'Active',
             dataIndex: 'isActive',
             key: 'isActive',
-            render: (isActive: boolean) => (isActive ? 'Yes' : 'No'),
+            render: (isActive: boolean) => (
+                <Tag color={isActive ? 'green' : 'red'}>
+                    {isActive ? 'Active' : 'Inactive'}
+                </Tag>
+            ),
         },
     ];
 
@@ -188,7 +190,8 @@ const Students = () => {
             <Flex gap={16}>
                 <Button size="large" type="primary"
                     style={{ margin: '0 16px ' }}
-                    onClick={handleAddStudentButtonClick}>
+                    onClick={handleAddStudentButtonClick}
+                    icon={<PlusOutlined/>}>
                     Register New Student
                 </Button>
                 <AddStudent visible={openAddStudent} onClose={handleAddStudentModalClose} />

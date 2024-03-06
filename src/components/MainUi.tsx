@@ -11,7 +11,7 @@ import {
     DiffOutlined,
 } from "@ant-design/icons";
 
-const { Header, Content, Footer, Sider } = Layout;
+const { Content, Sider } = Layout;
 type MenuItem = Required<MenuProps>["items"][number];
 function getItem(
     label: React.ReactNode,
@@ -72,9 +72,9 @@ const MainUi = ({ children }:{children: ReactNode}) => {
                 />
             </Sider>
             <Layout>
-                <Header />
+                
                 <Content>{children}</Content>
-                <Footer></Footer>
+                
             </Layout>
         </Layout>
     );

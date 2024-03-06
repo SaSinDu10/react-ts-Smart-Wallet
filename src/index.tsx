@@ -71,15 +71,15 @@ const routes = [
     element: <App />,
   },
   {
-    path: "/Login",
+    path: "/login",
     element: <Login />,
   },
   {
-    path: "/Dashboard",
+    path: "/dashboard",
     element: <Dashboard />,
   },
   {
-    path: "/Students",
+    path: "/students",
     element: <Students/>,
   },
   // {
@@ -87,7 +87,7 @@ const routes = [
   //   element: <AddStudent />,
   // },
   {
-    path: "/Courses",
+    path: "/courses",
     element: <Courses />,
   },
   // {
@@ -99,7 +99,7 @@ const routes = [
   //   element: <StudentProfile />,
   // },
   {
-    path: "/Courses/:courseId",
+    path: "/courses/:courseId",
     element: <CourseProfile/>,
   },
   {

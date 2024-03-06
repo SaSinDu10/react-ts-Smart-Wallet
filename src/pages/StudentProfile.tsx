@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, gql, useMutation } from '@apollo/client';
-import { Divider, Table, Tabs, Tag } from 'antd';
+import {Button, Table, Tabs, Tag } from 'antd';
 import { Link } from 'react-router-dom';
 import StudentActivate from '../buttons/StudentActivate';
 import AssignCourse from '../buttons/AssignCourse';
@@ -100,7 +100,10 @@ export default function StudentProfile(props: props) {
         {
             title: 'Active',
             dataIndex: 'isActive',
-            render: ()=> student.isActive ? 'Active Student' : 'Inactive Student',
+            render: ()=> (
+                <Tag color={student.isActive ? 'green' : 'red'}>
+                    {student.isActive ? 'Active Student' : 'Inactive Student'}
+                </Tag>),
         },
     ];
 
@@ -117,7 +120,10 @@ export default function StudentProfile(props: props) {
         {
             title: 'Course State',
             dataIndex: 'isActive',
-            render: (isActive: boolean) => (isActive ? 'Yes' : 'No'),
+            render: (isActive: boolean) => (
+            <Tag color={isActive ? 'green' : 'red'}>
+                {isActive ? 'Active' : 'Inactive'}
+            </Tag>),
         },
         {
             title: 'De-Assign',
@@ -135,7 +141,6 @@ export default function StudentProfile(props: props) {
 
         <div>
 
-            <Divider>Student Profile</Divider>
             <Tabs defaultActiveKey="1" centered>
                 <TabPane tab="Student Details" key="1" style={{ margin: '24px' }}>
                     <h1>{student.name}</h1>
@@ -152,7 +157,7 @@ export default function StudentProfile(props: props) {
                 <TabPane tab="Payments" key="3" style={{ margin: '24px' }}>
                     <h2>Payments</h2>
                     {student.courses.map((course: { _id: string; name: string; }) => (
-                        <Tag key={course._id} onClick={() => handleCourseSelect(course._id)} style={{ color: selectedCourseId === course._id ? '#29a329' : '#131307' }}>{course.name}</Tag>
+                        <Button key={course._id} onClick={() => handleCourseSelect(course._id)} style={{ margin:'16px',color: selectedCourseId === course._id ? '#29a329' : '#131307' }}>{course.name}</Button>
                     ))}
                     {selectedCourseId && (
                         <SelectCourse

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Modal, Dropdown, Menu } from 'antd';
 import { useMutation, gql, useQuery } from '@apollo/client';
+import { DownOutlined } from '@ant-design/icons';
 
 const ASSIGN_COURSE = gql`
     mutation AssignCourse($studentId: ObjectId!, $courseId: ObjectId!) {
@@ -68,7 +69,7 @@ function AssignCourse({ studentId, courses }: Props) {
             </Button>
             <Modal title="Assign Course" visible={isModalOpen} onCancel={handleCancel} footer={null}>
                 <Dropdown overlay={menu}>
-                    <Button>Select a Course</Button>
+                    <Button icon={<DownOutlined />}>Select a Course</Button>
                 </Dropdown>
             </Modal>
         </>

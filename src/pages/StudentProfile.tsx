@@ -29,6 +29,12 @@ const UPDATE_STUDENT = gql`
     }
 `;
 
+const REMOVE_COURSE = gql`
+    mutation Mutation($studentId: ObjectId!, $courseId: ObjectId!) {
+        RemoveCourseFromStudent(studentId: $studentId, courseId: $courseId)
+    }
+`;
+
 interface props {
     studentId: string;
 }
@@ -39,6 +45,7 @@ export default function StudentProfile(props: props) {
     
     const [selectedCourseId, setSelectedCourseId] = useState("");
     const [updateStudent] = useMutation(UPDATE_STUDENT);
+    const [removeCourseFromStudent] = useMutation(REMOVE_COURSE);
     const { loading, error, data, refetch } = useQuery(GET_STUDENT, {
         variables: {
             getStudentId: props.studentId,
@@ -60,6 +67,20 @@ export default function StudentProfile(props: props) {
         
         refetch() 
     }
+    const handleRemoveCourse = async (courseId: string) => {
+        try {
+            await removeCourseFromStudent({
+                variables: {
+                    studentId: props.studentId,
+                    courseId: courseId,
+                },
+            });
+            
+            refetch()
+        } catch (error) {
+            console.error('Error removing course:', error);
+        }
+    };
     
     if (loading) return <p>Loading...</p>;
     
@@ -101,7 +122,7 @@ export default function StudentProfile(props: props) {
         {
             title: 'De-Assign',
             render: (record: any) => (
-                <RemoveCourse studentId={student._id} courseId={record._id} onRemove={onRemove} />
+                <RemoveCourse studentId={student._id} courseId={record._id} onRemove={() => handleRemoveCourse(record._id)} />
             ),
         },
     ];
@@ -109,18 +130,6 @@ export default function StudentProfile(props: props) {
     const handleCourseSelect = (courseId: string) => {
         setSelectedCourseId(courseId);
     };
-
-    // const menu = (
-    //     <Menu>
-    //         {student.courses.map((course: { _id: string; name: string; }) => (
-    //             <Menu.Item key={course._id} onClick={() => handleCourseSelect(course._id)}>
-    //                 {course.name}
-    //             </Menu.Item>
-    //         ))}
-    //     </Menu>
-    // );
-    
-    
 
     return (
 
@@ -143,7 +152,7 @@ export default function StudentProfile(props: props) {
                 <TabPane tab="Payments" key="3" style={{ margin: '24px' }}>
                     <h2>Payments</h2>
                     {student.courses.map((course: { _id: string; name: string; }) => (
-                        <Tag key={course._id} onClick={() => handleCourseSelect(course._id)} style={{ color: selectedCourseId === course._id ? '#29a329' : 'default-color' }}>{course.name}</Tag>
+                        <Tag key={course._id} onClick={() => handleCourseSelect(course._id)} style={{ color: selectedCourseId === course._id ? '#29a329' : '#131307' }}>{course.name}</Tag>
                     ))}
                     {selectedCourseId && (
                         <SelectCourse
@@ -158,8 +167,3 @@ export default function StudentProfile(props: props) {
     );
 };
 
-
-
-function onRemove(): void {
-    throw new Error('Function not implemented.');
-}

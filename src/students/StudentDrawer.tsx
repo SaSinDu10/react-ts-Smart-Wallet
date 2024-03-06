@@ -15,7 +15,7 @@ const StudentDrawer: React.FC<StudentDrawerProps> = ({ open, onClose, selectedSt
                 title="Student Profile"
                 width={720}
                 onClose={onClose}
-                visible={open}
+                open={open}
                 styles={{
                     body: {
                         paddingBottom: 80,

@@ -1,40 +1,18 @@
 import React from 'react'
-import { useMutation, gql } from '@apollo/client';
+
 import { Button } from 'antd';
 
-const REMOVE_COURSE = gql`
-    mutation Mutation($studentId: ObjectId!, $courseId: ObjectId!) {
-        RemoveCourseFromStudent(studentId: $studentId, courseId: $courseId)
-    }
-`;
 
-interface Props {
+interface props {
     studentId: string; 
     courseId: string;
     onRemove: () => void; 
 }
 
-function RemoveCourse({ studentId, courseId, onRemove }: Props) {
-    const [removeCourseFromStudent] = useMutation(REMOVE_COURSE);
-
-    const handleRemoveCourse = async () => {
-        try {
-            await removeCourseFromStudent({
-                variables: {
-                    studentId,
-                    courseId,
-                },
-            });
-            
-            onRemove();
-        } catch (error) {
-            console.error('Error removing course:', error);
-        }
-    };
+function RemoveCourse({ onRemove }: props) {
     
-
     return (
-        <Button onClick={handleRemoveCourse} style={{color:'#cc0000'}}>
+        <Button onClick={onRemove} style={{color:'#cc0000'}}>
             Remove
         </Button>
     );

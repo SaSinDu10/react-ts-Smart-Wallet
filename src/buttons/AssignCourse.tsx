@@ -21,12 +21,14 @@ const GET_COURSES = gql`
 interface Props {
     studentId: string;
     courses: { _id: string; name: string }[];
+    refetchCourses: () => void;
 }
 
-function AssignCourse({ studentId, courses }: Props) {
+function AssignCourse({ studentId, courses,refetchCourses }: Props) {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    //const [assignCOurseBtn,setAssignCourseBtn] = useState();
     const [assignCourseToStudent] = useMutation(ASSIGN_COURSE);
-    const { loading, error, data } = useQuery(GET_COURSES);
+    const { loading, error, data} = useQuery(GET_COURSES);
 
     const handleAssignCourse = async (courseId: string) => {
         try {
@@ -37,6 +39,7 @@ function AssignCourse({ studentId, courses }: Props) {
                 }
             });
             setIsModalOpen(false);
+            refetchCourses();
 
         } catch (error) {
             console.error('Error assigning course:', error);

@@ -35,6 +35,7 @@ const REMOVE_COURSE = gql`
     }
 `;
 
+
 interface props {
     studentId: string;
 }
@@ -151,7 +152,8 @@ export default function StudentProfile(props: props) {
                     <h2>Enrolled Courses</h2>
                     <AssignCourse
                         studentId={student._id}
-                        courses={student.courses.map((course: { _id: string; name: string; }) => ({ _id: course._id, name: course.name }))} />
+                        courses={student.courses.map((course: { _id: string; name: string; }) => ({ _id: course._id, name: course.name }))} 
+                        refetchCourses={refetch}/>
                     <Table columns={columns2} dataSource={student.courses} size="middle" pagination={false} />
                 </TabPane>
                 <TabPane tab="Payments" key="3" style={{ margin: '24px' }}>

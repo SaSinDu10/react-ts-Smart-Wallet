@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Modal, Dropdown, Menu } from 'antd';
+import { Button, Modal, Dropdown, Menu, Spin } from 'antd';
 import { useMutation, gql, useQuery } from '@apollo/client';
 import { DownOutlined } from '@ant-design/icons';
 
@@ -50,7 +50,9 @@ function AssignCourse({ studentId, courses,refetchCourses }: Props) {
         setIsModalOpen(false);
     };
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) return <Spin tip="Loading">
+        <div className="content" />
+    </Spin>;
     if (error) return <p>Error fetching courses.</p>;
 
     const allCourses = data.GetCourses;

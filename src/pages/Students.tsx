@@ -1,4 +1,4 @@
-import { Divider, Button, Input, Space, Table, Flex, Breadcrumb } from 'antd';
+import { Divider, Button, Input, Space, Table, Flex, Breadcrumb, Spin } from 'antd';
 import { useQuery, gql } from '@apollo/client';
 import MainUi from '../components/MainUi';
 import React, { useRef, useState } from 'react';
@@ -56,7 +56,9 @@ const Students = () => {
         setOpenAddStudent(false);
     };
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) return <Spin tip="Loading">
+        <div className="content" style={{position:"fixed" ,top: '50%', left: '50%'}}/>
+    </Spin>;
 
     if (error) {
         console.error('GraphQL Error:', error);
@@ -195,10 +197,10 @@ const Students = () => {
                     Register New Student
                 </Button>
                 <AddStudent visible={openAddStudent} onClose={handleAddStudentModalClose} />
-                <Input.Search size="large" placeholder="Filter by keyword" style={{ margin: '0 16px' }} />
+                <Input.Search size="large" placeholder="Filter by keyword" style={{ margin: '0 16px 0 0' }} />
             </Flex>
             <div>
-                <Divider >Student Table</Divider>
+                <Divider >Students Table</Divider>
                 <Table
                     columns={columns}
                     dataSource={dt1?.GetStudents}

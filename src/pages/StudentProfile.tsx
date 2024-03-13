@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useQuery, gql, useMutation } from '@apollo/client';
-import {Button, Table, Tabs, Tag } from 'antd';
+import { Button, Table, Tabs, Tag, Form, Input, Switch, Spin } from 'antd';
 import { Link } from 'react-router-dom';
-import StudentActivate from '../buttons/StudentActivate';
+//import StudentActivate from '../buttons/StudentActivate';
 import AssignCourse from '../buttons/AssignCourse';
 import RemoveCourse from '../buttons/RemoveCourse';
 import SelectCourse from '../buttons/SelectCourse';
@@ -35,7 +35,6 @@ const REMOVE_COURSE = gql`
     }
 `;
 
-
 interface props {
     studentId: string;
 }
@@ -43,8 +42,9 @@ interface props {
 const { TabPane } = Tabs;
 
 export default function StudentProfile(props: props) {
-    
+
     const [selectedCourseId, setSelectedCourseId] = useState("");
+    //const [switchState, setSwitchState] = useState(false);
     const [updateStudent] = useMutation(UPDATE_STUDENT);
     const [removeCourseFromStudent] = useMutation(REMOVE_COURSE);
     const { loading, error, data, refetch } = useQuery(GET_STUDENT, {
@@ -53,20 +53,19 @@ export default function StudentProfile(props: props) {
         },
     });
     
-    const handleMutation = (activeStatus:boolean):void =>{
+    const [switchState, setSwitchState] = useState(data?.GetStudent.isActive);
+    const handleMutation = (activeStatus: boolean): void => {
         try {
             updateStudent({
                 variables: {
                     studentId: props.studentId,
-                    student: { "isActive": !activeStatus }
+                    student: { "isActive": activeStatus }
                 },
             });
-            
         } catch (error) {
             console.error('Error updating student:', error);
         }
-        
-        refetch() 
+        refetch()
     }
     const handleRemoveCourse = async (courseId: string) => {
         try {
@@ -76,32 +75,43 @@ export default function StudentProfile(props: props) {
                     courseId: courseId,
                 },
             });
-            
+
             refetch()
+            alert("Student Update Successful!");
         } catch (error) {
             console.error('Error removing course:', error);
         }
     };
-    
-    if (loading) return <p>Loading...</p>;
-    
+
+    const handleSwitchChange = (checked: boolean) => {
+        setSwitchState(checked);
+    };
+
+    const handleUpdateButtonClick = () => {
+        handleMutation(switchState);
+    };
+
+    if (loading) 
+    return (
+    <Spin tip="Loading">
+        <div className="content" />
+    </Spin>);
+
     if (error) {
         console.error('GraphQL Error:', error);
         return <p>Error loading data</p>;
     }
     const student = data?.GetStudent;
-    
-    
-    
+
     const columns1 = [
-        {
-            title: 'Id',
-            dataIndex: '_id',
-        },
+        // {
+        //     title: 'Id',
+        //     dataIndex: '_id',
+        // },
         {
             title: 'Active',
             dataIndex: 'isActive',
-            render: ()=> (
+            render: () => (
                 <Tag color={student.isActive ? 'green' : 'red'}>
                     {student.isActive ? 'Active Student' : 'Inactive Student'}
                 </Tag>),
@@ -122,9 +132,9 @@ export default function StudentProfile(props: props) {
             title: 'Course State',
             dataIndex: 'isActive',
             render: (isActive: boolean) => (
-            <Tag color={isActive ? 'green' : 'red'}>
-                {isActive ? 'Active' : 'Inactive'}
-            </Tag>),
+                <Tag color={isActive ? 'green' : 'red'}>
+                    {isActive ? 'Active' : 'Inactive'}
+                </Tag>),
         },
         {
             title: 'De-Assign',
@@ -139,27 +149,42 @@ export default function StudentProfile(props: props) {
     };
 
     return (
-
         <div>
-
             <Tabs defaultActiveKey="1" centered>
                 <TabPane tab="Student Details" key="1" style={{ margin: '24px' }}>
-                    <h1>{student.name}</h1>
-                    <StudentActivate state={student.isActive} onMutation = {handleMutation}/>
-                    <Table columns={columns1} dataSource={[student]} size="middle" pagination={false} />
+                    <Form
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 14 }}
+                        layout="vertical"
+                        style={{ maxWidth: 600 }}>
+                        <Form.Item label="Active" name="isActive" valuePropName="checked">
+                            <Switch defaultChecked={data?.GetStudent.isActive} onChange={handleSwitchChange} />
+                        </Form.Item>
+                        <h1>{student.name}</h1>
+                        <Form.Item label="Student_Id">
+                            <Input disabled value={student._id} />
+                        </Form.Item>
+                        <Form.Item label="Student_Name">
+                            <Input disabled value={student.name} />
+                        </Form.Item>
+                        <Table columns={columns1} dataSource={[student]} size="middle" pagination={false} />
+                        <Form.Item style={{ margin: '50px 0' }}>
+                            <Button onClick={handleUpdateButtonClick}>Update</Button>
+                        </Form.Item>
+                    </Form>
                 </TabPane>
                 <TabPane tab="Assign Courses" key="2" style={{ margin: '24px' }}>
                     <h2>Enrolled Courses</h2>
                     <AssignCourse
                         studentId={student._id}
-                        courses={student.courses.map((course: { _id: string; name: string; }) => ({ _id: course._id, name: course.name }))} 
-                        refetchCourses={refetch}/>
+                        courses={student.courses.map((course: { _id: string; name: string; }) => ({ _id: course._id, name: course.name }))}
+                        refetchCourses={refetch} />
                     <Table columns={columns2} dataSource={student.courses} size="middle" pagination={false} />
                 </TabPane>
                 <TabPane tab="Payments" key="3" style={{ margin: '24px' }}>
                     <h2>Payments</h2>
                     {student.courses.map((course: { _id: string; name: string; }) => (
-                        <Button key={course._id} onClick={() => handleCourseSelect(course._id)} style={{ margin:'16px',color: selectedCourseId === course._id ? '#29a329' : '#131307' }}>{course.name}</Button>
+                        <Button key={course._id} onClick={() => handleCourseSelect(course._id)} style={{ margin: '16px', color: selectedCourseId === course._id ? '#29a329' : '#131307' }}>{course.name}</Button>
                     ))}
                     {selectedCourseId && (
                         <SelectCourse
@@ -170,7 +195,6 @@ export default function StudentProfile(props: props) {
                 </TabPane>
             </Tabs>
         </div>
-
     );
 };
 

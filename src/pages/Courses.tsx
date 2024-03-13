@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Breadcrumb, Button, Divider, Flex, Input, Table, Tag } from 'antd';
+import { Breadcrumb, Button, Divider, Flex, Input, Spin, Table, Tag } from 'antd';
 import {  PlusOutlined } from '@ant-design/icons';
 import { useQuery, gql } from '@apollo/client';
 import MainUi from '../components/MainUi';
@@ -29,7 +29,9 @@ const Students = () => {
         setOpenAddCourse(false);
     };
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) return (<Spin tip="Loading">
+        <div className="content" />
+    </Spin>);
 
     if (error) {
         console.error('GraphQL Error:', error);

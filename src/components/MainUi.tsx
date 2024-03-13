@@ -1,6 +1,6 @@
 import React, { ReactNode, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Layout, Menu, MenuProps } from "antd";
+import { Layout, Menu, MenuProps,Image } from "antd";
 import {
     HomeOutlined,
     //UserAddOutlined,
@@ -8,7 +8,7 @@ import {
     UserOutlined,
     BookOutlined,
     SnippetsOutlined,
-    DiffOutlined,
+    //DiffOutlined,
 } from "@ant-design/icons";
 
 const { Content, Sider } = Layout;
@@ -30,11 +30,11 @@ const items = [
     ]),
     getItem("Courses", "sub2", <BookOutlined />, [
         getItem("View Courses", "4", <SnippetsOutlined />),
-        getItem("Add Course", "5", <DiffOutlined />),
+        //getItem("Add Course", "5", <DiffOutlined />),
     ]),
 ];
 
-const MainUi = ({ children }:{children: ReactNode}) => {
+const MainUi = ({ children }: { children: ReactNode }) => {
     const [collapsed, setCollapsed] = useState(false);
     const navigate = useNavigate();
 
@@ -45,25 +45,33 @@ const MainUi = ({ children }:{children: ReactNode}) => {
                 collapsed={collapsed}
                 onCollapse={(value) => setCollapsed(value)}
             >
+                <Image src="/logo192.png" width="100%" preview={false} style={{
+                    margin: "10px 0",
+                    objectFit: "scale-down"
+                }} />
                 <div className="demo-logo-vertical" />
                 <Menu
                     theme="dark"
                     defaultSelectedKeys={["1"]}
                     mode="inline"
+                    style={{padding: "0 8px",gap: 30}}
                     items={items}
                     onClick={({ key }) => {
                         switch (key) {
+                            case "1":
+                                navigate("/dashboard");
+                                break;
                             case "2":
-                                navigate("/Students");
+                                navigate("/students");
                                 break;
                             case "3":
-                                navigate("/AddStudent");
+                                navigate("/addStudent");
                                 break;
                             case "4":
-                                navigate("/Courses");
+                                navigate("/courses");
                                 break;
                             case "5":
-                                navigate("/AddCourse");
+                                navigate("/addCourse");
                                 break;
                             default:
                                 break;
@@ -72,9 +80,9 @@ const MainUi = ({ children }:{children: ReactNode}) => {
                 />
             </Sider>
             <Layout>
-                
+
                 <Content>{children}</Content>
-                
+
             </Layout>
         </Layout>
     );

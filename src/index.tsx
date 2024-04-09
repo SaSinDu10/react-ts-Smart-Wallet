@@ -13,7 +13,7 @@ import Students from "./pages/Students";
 //import AddCourse from "./pages/AddCourse";
 import Courses from "./pages/Courses";
 //import StudentProfile from "./pages/StudentProfile";
-import CourseProfile from "./pages/CourseProfile";
+//import CourseProfile from "./pages/CourseProfile";
 import { setContext } from "@apollo/client/link/context";
 
 function merge(existing: any[] = [], incoming: any[]) {
@@ -98,10 +98,10 @@ const routes = [
   //   path: "/Students/:studentId",
   //   element: <StudentProfile />,
   // },
-  {
-    path: "/courses/:courseId",
-    element: <CourseProfile/>,
-  },
+  // {
+  //   path: "/courses/:courseId",
+  //   element: <CourseProfile/>,
+  // },
   {
     path: "*",
     element: <NoPage />,

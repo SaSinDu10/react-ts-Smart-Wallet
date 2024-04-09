@@ -5,6 +5,7 @@ import { useQuery, gql } from '@apollo/client';
 import MainUi from '../components/MainUi';
 import { Link } from 'react-router-dom';
 import AddCourse from './AddCourse';
+import CourseDrawer from '../students/CourseDrawer';
 
 const GET_COURSES = gql`
 query Query {
@@ -20,6 +21,13 @@ query Query {
 const Students = () => {
     const { loading, error, data,fetchMore } = useQuery(GET_COURSES);
     const [openAddCourse, setOpenAddCourse] = useState(false);
+    const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
+
+    const [drawerVisible, setDrawerVisible] = useState(false);
+
+    const onCloseDrawer = () => {
+        setDrawerVisible(false);
+    };
 
     const handleAddCourseButtonClick = () => {
         setOpenAddCourse(true);
@@ -96,11 +104,25 @@ const Students = () => {
                         fetchMore({
                             variables: { skip: (page - 1) * 10 }
                         });
-                        console.log(data.GetStudents);
+                        console.log(data.GetCourses);
                     }
+                }}
+                onRow={(record) => {
+                    return {
+                        onClick: () => {
+                            console.log("Clicked row:", record);
+                            if (record) {
+                                setSelectedCourseId(record._id);
+                                setDrawerVisible(true);
+                            } else {
+                                console.error("Record is null or undefined.");
+                            }
+                        }
+                    };
                 }}
                 />
             </div>
+            <CourseDrawer open={drawerVisible} onClose={onCloseDrawer} selectedCourseId={selectedCourseId}/>
         </MainUi>
     );
 };

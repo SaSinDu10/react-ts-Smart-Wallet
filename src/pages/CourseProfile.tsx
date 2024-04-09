@@ -1,7 +1,7 @@
 import React from 'react';
 import MainUi from "../components/MainUi";
 import { useQuery, gql } from '@apollo/client';
-import { Divider, Table } from 'antd';
+import { Button, Form, Input, Spin, Switch, Table, Tabs } from 'antd';
 import { Link, useParams } from 'react-router-dom';
 import CourseActivate from '../buttons/CourseActivate';
 import GeneratePayment from '../buttons/GeneratePayment';
@@ -22,15 +22,23 @@ const GET_COURSE = gql`
     }
 `;
 
-const CourseProfile = () => {
+interface props {
+    courseId: string;
+}
+
+const { TabPane } = Tabs;
+
+const CourseProfile = (props: props) => {
     const { courseId } = useParams();
     const { loading, error, data } = useQuery(GET_COURSE, {
         variables: {
-            getCourseId: courseId,
+            getCourseId: props.courseId,
         },
     });
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) return <Spin tip="Loading">
+        <div className="content" />
+    </Spin>;
 
     if (error) {
         console.error('GraphQL Error:', error);
@@ -44,7 +52,7 @@ const CourseProfile = () => {
             title: 'Id',
             dataIndex: '_id',
         },
-        
+
         {
             title: 'State',
             dataIndex: 'isActive',
@@ -71,19 +79,43 @@ const CourseProfile = () => {
             dataIndex: 'isActive',
             render: (isActive: boolean) => (isActive ? 'Yes' : 'No'),
         },
-        
+
     ];
 
     return (
         <MainUi>
             <div>
-                <Divider>Course Profile</Divider>
-                <h1>{course.name}</h1>
-                <CourseActivate state={course.isActive} />
-                <Table columns={columns1} dataSource={[course]} size="middle" />
-                <h2>Enrolled Students</h2>
-                <GeneratePayment courseId={courseId} />
-                <Table columns={columns2} dataSource={course.students} size="middle" />
+                <Tabs defaultActiveKey="1" centered>
+                    <TabPane tab="Course Details" key="1" style={{ margin: '24px' }}>
+                        <Form
+                            labelCol={{ span: 4 }}
+                            wrapperCol={{ span: 14 }}
+                            layout="vertical"
+                            style={{ maxWidth: 600 }}>
+                            <Form.Item label="Active" name="isActive" valuePropName="checked">
+                                <Switch defaultChecked={data?.GetStudent.isActive} />
+                            </Form.Item>
+                            <h1>{course.name}</h1>
+                            <CourseActivate state={course.isActive} />
+
+                            <Form.Item label="Student_Id">
+                                <Input disabled value={course._id} />
+                            </Form.Item>
+                            <Form.Item label="Student_Name">
+                                <Input disabled value={course.name} />
+                            </Form.Item>
+                            <Table columns={columns1} dataSource={[course]} size="middle" pagination={false} />
+                            <Form.Item style={{ margin: '50px 0' }}>
+                                <Button>Update</Button>
+                            </Form.Item>
+                        </Form>
+                    </TabPane>
+                    <TabPane tab="Enrolled Courses" key="2" style={{ margin: '24px' }}>
+                        <h2>Enrolled Courses</h2>
+                        <GeneratePayment courseId={courseId} />
+                        <Table columns={columns2} dataSource={course.students} size="middle" />
+                    </TabPane>
+                </Tabs>
             </div>
         </MainUi>
     );

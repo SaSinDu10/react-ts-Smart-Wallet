@@ -4,6 +4,6 @@ import React from 'react';
 
 export default function Dashboard() {
     return <MainUi>
-        <h1>!..........Welcome............!</h1>
+        <h1>Home</h1>
     </MainUi>
 }

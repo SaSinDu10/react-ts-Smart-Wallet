@@ -161,10 +161,10 @@ export default function StudentProfile(props: props) {
                             <Switch defaultChecked={data?.GetStudent.isActive} onChange={handleSwitchChange} />
                         </Form.Item>
                         <h1>{student.name}</h1>
-                        <Form.Item label="Student_Id">
+                        <Form.Item label="Student Id">
                             <Input disabled value={student._id} />
                         </Form.Item>
-                        <Form.Item label="Student_Name">
+                        <Form.Item label="Student Name">
                             <Input disabled value={student.name} />
                         </Form.Item>
                         <Table columns={columns1} dataSource={[student]} size="middle" pagination={false} />

@@ -27,9 +27,9 @@ function Login(): JSX.Element {
 
             sessionStorage.setItem("AccessToken", accessToken);
 
-            message.success(`Login Successful. Access Token: ${accessToken}`);
+            //message.success(`Login Successful. Access Token: ${accessToken}`);
 
-            navigate("/Dashboard");
+            navigate("/dashboard");
         } catch (error) {
             console.error("Login error:", error);
 

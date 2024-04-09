@@ -36,13 +36,9 @@ const Students = () => {
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef<InputRef>(null);
     const [openAddStudent, setOpenAddStudent] = useState(false);
-    const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null); // Change type to string | null
+    const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
 
     const [drawerVisible, setDrawerVisible] = useState(false);
-
-    // const showDrawer = () => {
-    //     setDrawerVisible(true);
-    // };
 
     const onCloseDrawer = () => {
         setDrawerVisible(false);

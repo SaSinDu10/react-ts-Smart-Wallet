@@ -1,5 +1,5 @@
 import { gql, useMutation, useQuery } from '@apollo/client';
-import { Table, Button } from 'antd';
+import { Table, Button, Spin } from 'antd';
 import React from 'react';
 
 const GET_PAYMENTS = gql`
@@ -43,7 +43,9 @@ function SelectCourse({ studentId, courseId }: Props) {
 
     const [markPaymentDone] = useMutation(MARK_PAYMENT);
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) return <Spin tip="Loading">
+        <div className="content" />
+    </Spin>;
 
     if (error) {
         console.error('GraphQL Error:', error);
